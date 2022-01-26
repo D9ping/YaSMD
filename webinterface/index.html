@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>YaSMD</title>
+    <link rel="shortcut icon" href="favicon.png">
+    <link rel="stylesheet" type="text/css" href="dygraph.css" />
+    <link rel="stylesheet" type="text/css" href="yetanothersmartmeterdashboard.css" />
+</head>
+<body>
+    <span id="issues"></span>
+    <h1>Yet another smart meter dashboard</h1>
+    <img src="previous.gif" id="btnback" style="" width="24" height="24" /><span id="textSelectedDate"></span><img src="next.gif" id="btnnext" style="display:none" width="24" height="24" /> &nbsp;
+    <a id="downloadlink" href="/data.csv" download="data.csv" rel="nofollow"><button id="btndownload" class="btndownload" title="download csv from today">&#x2b07;</button></a>
+    <br />
+    <br />
+    <div id="divGraphPower"></div>
+    <br />
+    <div id="divCurrentTemperature">
+    <h3 id="currentTemperature"></h3>
+    </div>
+    <div id="divGraphGas" ></div>
+    <br />
+    <img src="previous.gif" id="btnbackMonth" style="" width="24" height="24" /><span id="textSelectedMonth"></span><img src="next.gif" id="btnnextMonth" style="display:none" width="24" height="24" />
+    <br />
+    <div id="divGraphGasMonth" ></div>
+    <small><small>Gas price € <span id="spanGasRate" titel="Click to edit gas price.">1,23</span></small></small>
+    <script type="application/javascript" src="moment.min.js"></script>
+    <script type="application/javascript" src="dygraph.min.js"></script>
+    <script type="application/javascript" src="gauge.min.js"></script>
+    <script type="application/javascript" src="yetanothersmartmeterdashboard.js"></script>
+</body>
+</html>
