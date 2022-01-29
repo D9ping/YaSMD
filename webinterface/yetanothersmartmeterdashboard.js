@@ -1,4 +1,8 @@
 
+var firstDataDate = new Date(2022, 1, 1, 0, 0, 0, 0);
+var firstGasDate = new Date(2022, 1, 1, 0, 0, 0, 0);
+var firstDataMonth = new Date(2022, 1, 1, 0, 0, 0, 0);
+
 function loadPowerGraph(csvfile) {
     graphPower = new Dygraph(
         document.getElementById("divGraphPower"),
@@ -180,10 +184,6 @@ function showSelectedMonth() {
 
 loadPowerGraph("/data.csv");
 loadGasGraph("/gasuse.csv");
-
-var firstDataDate = new Date(2020, 10, 14, 0, 0, 0, 0);
-var firstGasDate = new Date(2020, 11, 23, 0, 0, 0, 0);
-var firstDataMonth = new Date(2020, 10, 30, 23,59, 0, 0);
 
 curDate = new Date()
 var selectedMonth = new Date(curDate.getTime() - (curDate.getTimezoneOffset() * 60000));

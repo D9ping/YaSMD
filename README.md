@@ -6,6 +6,13 @@ An other python script to read the smart meter and write
  And there is a line chart of gas use per hour.
  And there is a bar chart with the gas use per day.
 
+### Python3 dependencies
+PySerial is needed for reading the P1 port on the smart meter.
+PyCurl is used for getting the hourly outside temperature data.
+```shell
+pip3 install pycurl pyserial
+```
+
 ### crontab entries
 ```shell
 # Read smart meter every 5 minutes.
@@ -15,12 +22,23 @@ An other python script to read the smart meter and write
 59 23 * * * /usr/bin/nice -n 10 sh /home/pi/rotate_csv_files.sh >>/home/pi/rotate_csv_files.log 2>&1
 ```
 
-Because writing often little data to a sd-card can wear it quickly
- YaSMD uses a tmpfs memory drive to collect multiple lines for the csv file
- and then write them at once.
+### Extending MicroSD card lifespan with tmpfs caching.
+If you use this on a rasberry Pi with a MicroSD card, 
+the MicroSD lifespan can be short because of a lot of short writes for each line 
+using a new sector. To avoid that a tmpfs drive on /var/cache/yasmd must be created
+ and then multiple lines will be writen at once if certain size(508bytes) has been reached.
 
-run: sudo mkdir -p /var/cache/yasmd
+To setup the tmpfs drive run:
+```shell
+sudo mkdir -p /var/cache/yasmd
+```
 And to the /etc/fstab file is added:
 ```shell
 tmpfs /var/cache/yasmd tmpfs defaults,noatime,nodiratime,noexec,nodev,size=4M 0 0
 ```
+
+And then check fstab with:
+```shell
+sudo findmnt --verify
+```
+If no issues are found reboot the pi or run sudo mount -a to actualy start using the tmpfs drive.

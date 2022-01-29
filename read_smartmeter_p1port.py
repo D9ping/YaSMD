@@ -14,8 +14,12 @@ from io import BytesIO
 
 
 WEBINTERFACEROOTFOLDER = '/var/www/yasmd/'
-PREV_GAS_USE_COUNTERFILE = '/tmp/yasmd-prev-gas-use.counter'
+TMPFSDRIVE = '/var/cache/yasmd/'
+PREV_GAS_USE_COUNTERFILE = TMPFSDRIVE + 'yasmd-prev-gas-use.counter'
+WRITECACHE_TMPFILEPATH = TMPFSDRIVE + 'data.csv.new'
+DATA_FILEPATH = WEBINTERFACEROOTFOLDER + 'data.csv'
 OPENWEATHERMAPAPIKEY = ''
+OPENWEATHERMCITYID = ''
 
 # Set COM port config
 ser = serial.Serial()
@@ -34,24 +38,24 @@ try:
     ser.open()
 except:
     nowExcOpen = datetime.datetime.now()
-    sys.exit("%s Fout bij het openen van: %s "  % (nowExcOpen.strftime("%Y-%m-%d %H:%M:%S"), ser.name))
+    sys.exit("%s Error opening %s "  % (nowExcOpen.strftime("%Y-%m-%d %H:%M:%S"), ser.name))
 
-lines = 26
-p1_counter=0
-stack_teller=0
-p1_line=''
-stack=[]
+maxlines = 26
+p1_counter = 0
+stack_counter = 0
+p1_line = ''
+stack = []
 
-while p1_counter < lines:
+while p1_counter < maxlines:
     try:
         p1_raw = ser.readline()
     except:
         nowExcRead = datetime.datetime.now()
         sys.exit("%s Serial port %s could not be read." % (nowExcOpen.strftime("%Y-%m-%d %H:%M:%S"), ser.name))
-    p1_str=str(p1_raw.decode('UTF-8'))
-    p1_line=p1_str.strip()
+    p1_str = str(p1_raw.decode('UTF-8'))
+    p1_line = p1_str.strip()
     stack.append(p1_line)
-    p1_counter = p1_counter + 1
+    p1_counter += 1
 
 now = datetime.datetime.now()
 piekverbruik = 0
@@ -61,37 +65,34 @@ dalterug = 0
 vermogenterug = ""
 vermogenaf = ""
 gas = ""
-while stack_teller < lines:
-    if stack[stack_teller][0:9] == "1-0:1.8.1":
-        dalverbruik = float(stack[stack_teller][10:20])
-    elif stack[stack_teller][0:9] == "1-0:1.8.2":
-        piekverbruik = float(stack[stack_teller][10:20])
+while stack_counter < maxlines:
+    if stack[stack_counter][0:9] == "1-0:1.8.1":
+        dalverbruik = float(stack[stack_counter][10:20])
+    elif stack[stack_counter][0:9] == "1-0:1.8.2":
+        piekverbruik = float(stack[stack_counter][10:20])
     # Daltarief, teruggeleverd vermogen 1-0:2.8.1
-    elif stack[stack_teller][0:9] == "1-0:2.8.1":
-        dalterug = float(stack[stack_teller][10:20])
+    elif stack[stack_counter][0:9] == "1-0:2.8.1":
+        dalterug = float(stack[stack_counter][10:20])
     # Piek tarief, teruggeleverd vermogen 1-0:2.8.2
-    elif stack[stack_teller][0:9] == "1-0:2.8.2":
-        piekterug = str(float(stack[stack_teller][10:20]))
+    elif stack[stack_counter][0:9] == "1-0:2.8.2":
+        piekterug = str(float(stack[stack_counter][10:20]))
     # Huidige stroomafname: 1-0:1.7.0
-    elif stack[stack_teller][0:9] == "1-0:1.7.0":
-        vermogenaf = str(int(float(stack[stack_teller][10:16])*1000))
+    elif stack[stack_counter][0:9] == "1-0:1.7.0":
+        vermogenaf = str(int(float(stack[stack_counter][10:16])*1000))
     # Huidig teruggeleverd vermogen: 1-0:1.7.0
-    elif stack[stack_teller][0:9] == "1-0:2.7.0":
-        vermogenterug = str(int(float(stack[stack_teller][10:16])*1000))
+    elif stack[stack_counter][0:9] == "1-0:2.7.0":
+        vermogenterug = str(int(float(stack[stack_counter][10:16])*1000))
     # Huidige netspanning: 1-0:32.7.0
-    #elif stack[stack_teller][0:10] == "1-0:32.7.0":
-    #    spanning = float(stack[stack_teller][11:14])
+    #elif stack[stack_counter][0:10] == "1-0:32.7.0":
+    #    spanning = float(stack[stack_counter][11:14])
     # Gasmeter: 0-1:24.2.1
-    elif stack[stack_teller][0:10] == "0-1:24.2.1":
-        gas = str(float(stack[stack_teller][26:34]))
+    elif stack[stack_counter][0:10] == "0-1:24.2.1":
+        gas = str(float(stack[stack_counter][26:34]))
     else:
         pass
-    stack_teller = stack_teller +1
+    stack_counter = stack_counter +1
 
 
-# WRITECACHE_TMPFILEPATH path is on tmpfs so the sd-card is written less.
-WRITECACHE_TMPFILEPATH = '/var/cache/yasmd/data.csv.new'
-DATA_FILEPATH = WEBINTERFACEROOTFOLDER + 'data.csv'
 TARGET_SECTORSIZE = 508
 writecachedata_filesize = 0
 if Path(WRITECACHE_TMPFILEPATH).is_file():
@@ -119,7 +120,7 @@ if time_cur_minut == 0:
         bytesOpenWeathermap = BytesIO()
         curlOpenWeatherData = pycurl.Curl()
         try:
-            curlOpenWeatherData.setopt(curlOpenWeatherData.URL, 'https://api.openweathermap.org/data/2.5/weather?id=....&mode=json&lang=nl&units=metric&APPID=' + OPENWEATHERMAPAPIKEY)
+            curlOpenWeatherData.setopt(curlOpenWeatherData.URL, 'https://api.openweathermap.org/data/2.5/weather?id=' + OPENWEATHERMCITYID + '&mode=json&lang=nl&units=metric&APPID=' + OPENWEATHERMAPAPIKEY)
             curlOpenWeatherData.setopt(curlOpenWeatherData.USERAGENT, 'YASMM/0.5')
             curlOpenWeatherData.setopt(pycurl.FOLLOWLOCATION, 0)
             curlOpenWeatherData.setopt(pycurl.CONNECTTIMEOUT, 45)
@@ -152,6 +153,6 @@ if time_cur_minut == 0:
         gas_hour = float(gas) - prev_gas_total
         with open(WEBINTERFACEROOTFOLDER + "gasuse.csv", "a") as gas_use_csvfile:
             gas_use_csvfile.write("%s,%0.3f,%s\r\n" % (now.strftime("%Y-%m-%d %H:%M:%S"), gas_hour, outside_local_temperature))
-    # Update counter
+    # Update temporary file.
     with open(PREV_GAS_USE_COUNTERFILE, "w") as gastotal_counterfile:
         gastotal_counterfile.write(str(gas))
