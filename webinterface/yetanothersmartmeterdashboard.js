@@ -1,6 +1,8 @@
-
+// Change to the first selectable date for power use:
 var firstDataDate = new Date(2022, 1, 1, 0, 0, 0, 0);
+// Change to the first selectable date for gas use per hour:
 var firstGasDate = new Date(2022, 1, 1, 0, 0, 0, 0);
+// Change to the first selectable date for gas use per day:
 var firstDataMonth = new Date(2022, 1, 1, 0, 0, 0, 0);
 
 function loadPowerGraph(csvfile) {
@@ -158,7 +160,6 @@ function loadGasMonthGraph(csvfile) {
 
 function showSelectedDate(isToday) {
     let spanSelectedDate = document.getElementById('textSelectedDate');
-    //let datestr = selectedDate.getFullYear() + '-' + (selectedDate.getMonth()+1) + '-' + selectedDate.getDate();
     let iso8601str = selectedDate.toISOString(true).substr(0, 10);
     spanSelectedDate.textContent = iso8601str;
     document.getElementById('btndownload').setAttribute('title', 'Download gegevens van ' + iso8601str);
@@ -173,7 +174,7 @@ function showSelectedDate(isToday) {
         document.getElementById('downloadlink').setAttribute('href', '/data.csv');
         return;
     }
-    
+
     document.getElementById('downloadlink').setAttribute('href', '/' + selectedDate.getFullYear() + '/data_' + iso8601str + '.csv');
 }
 
@@ -228,26 +229,26 @@ btnnext.addEventListener('click', function() {
 });
 
 btnbackMonth.addEventListener('click', function() {
-  selectedMonth = moment(selectedMonth).subtract(1, 'months').toDate();
-  document.getElementById('btnnextMonth').setAttribute("style", "");
-  if (moment(selectedMonth).isBefore(firstDataMonth)) {
-    document.getElementById('btnbackMonth').setAttribute("style", "visibility: hidden");
-  }
+    selectedMonth = moment(selectedMonth).subtract(1, 'months').toDate();
+    document.getElementById('btnnextMonth').setAttribute("style", "");
+    if (moment(selectedMonth).isBefore(firstDataMonth)) {
+        document.getElementById('btnbackMonth').setAttribute("style", "visibility: hidden");
+    }
 
-  showSelectedMonth();
-  loadGasMonthGraph('/' + selectedMonth.getFullYear() + "/gasuse_" + selectedMonth.toISOString().substr(0, 7) + ".csv");
+    showSelectedMonth();
+    loadGasMonthGraph('/' + selectedMonth.getFullYear() + "/gasuse_" + selectedMonth.toISOString().substr(0, 7) + ".csv");
 });
 
 btnnextMonth.addEventListener('click', function() {
-  selectedMonth = moment(selectedMonth).add(1, 'months').toDate();
-  document.getElementById('btnbackMonth').setAttribute("style", "");
-  var d = moment(new Date()).subtract(1, 'months').toDate();
-  if (moment(selectedMonth).isAfter(d)) {
-     document.getElementById('btnnextMonth').setAttribute("style", "visibility: hidden");
-  }
+    selectedMonth = moment(selectedMonth).add(1, 'months').toDate();
+    document.getElementById('btnbackMonth').setAttribute("style", "");
+    var d = moment(new Date()).subtract(1, 'months').toDate();
+    if (moment(selectedMonth).isAfter(d)) {
+        document.getElementById('btnnextMonth').setAttribute("style", "visibility: hidden");
+    }
 
-  showSelectedMonth();
-  loadGasMonthGraph('/' + selectedMonth.getFullYear() + "/gasuse_" + selectedMonth.toISOString().substr(0, 7) + ".csv");
+    showSelectedMonth();
+    loadGasMonthGraph('/' + selectedMonth.getFullYear() + "/gasuse_" + selectedMonth.toISOString().substr(0, 7) + ".csv");
 });
 
 var d = new Date();

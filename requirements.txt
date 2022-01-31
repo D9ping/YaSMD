@@ -1,0 +1,2 @@
+pyserial>=3.5
+pycurl>=7.43.0.6

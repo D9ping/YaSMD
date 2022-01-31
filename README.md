@@ -26,7 +26,7 @@ pip3 install pycurl pyserial
 If you use this on a rasberry Pi with a MicroSD card, 
 the MicroSD lifespan can be short because of a lot of short writes for each line 
 using a new sector. To avoid that a tmpfs drive on /var/cache/yasmd must be created
- and then multiple lines will be writen at once if certain size(508bytes) has been reached.
+ and then multiple lines will be writen at once to the sd-card if certain size(508bytes) has been reached.
 
 To setup the tmpfs drive run:
 ```shell
@@ -42,3 +42,10 @@ And then check fstab with:
 sudo findmnt --verify
 ```
 If no issues are found reboot the pi or run sudo mount -a to actualy start using the tmpfs drive.
+
+
+### Licenses
+The sourcecode of the YaSMD (Yet another Smart Meter Dashboard) is licensed under the terms of the MIT license.
+The used liberaries moment.js and dygraph.js are also licensed under the terms of the MIT license.
+PycURL is dual licensed under the LGPL and an MIT/X derivative license based on the cURL license.
+pySerial is licensed under a BSD-3-clause license.
