@@ -42,7 +42,7 @@ function loadPowerGraph(csvfile) {
             labelsDivStyles: {
                 'text-align': 'center'
             },
-            valueRange: [0, 5000],
+            valueRange: [0, 5000],  // Change to upper power use in watts in the chart visible.
             showRangeSelector: true
         }
     );
@@ -97,9 +97,7 @@ function darkenColor(colorStr) {
     return 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
 }
 
-// This function draws bars for a single series. See
-// multiColumnBarPlotter below for a plotter which can draw multi-series
-// bar charts.
+// This function draws bars for a single series.
 function barChartPlotter(e) {
     var ctx = e.drawingContext;
     var points = e.points;
@@ -108,11 +106,11 @@ function barChartPlotter(e) {
     // Find the minimum separation between x-values.
     // This determines the bar width.
     var min_sep = Infinity;
-    for (var i = 1; i < points.length; i++) {
+    for (var i = 1; i < points.length; ++i) {
         var sep = points[i].canvasx - points[i - 1].canvasx;
         if (sep < min_sep) min_sep = sep;
     }
-  
+
     var bar_width = Math.floor(0.9 * min_sep);
     // Do the actual plotting.
     for (var i = 0; i < points.length; ++i) {
@@ -186,7 +184,7 @@ function showSelectedMonth() {
 loadPowerGraph("/data.csv");
 loadGasGraph("/gasuse.csv");
 
-curDate = new Date()
+var curDate = new Date();
 var selectedMonth = new Date(curDate.getTime() - (curDate.getTimezoneOffset() * 60000));
 selectedMonth.setTime(selectedMonth.getTime() - (24*60*60*1000));
 var selectedDate = new Date(curDate.getTime() - (curDate.getTimezoneOffset() * 60000));
@@ -251,7 +249,6 @@ btnnextMonth.addEventListener('click', function() {
     loadGasMonthGraph('/' + selectedMonth.getFullYear() + "/gasuse_" + selectedMonth.toISOString().substr(0, 7) + ".csv");
 });
 
-var d = new Date();
 showSelectedDate(true);
 showSelectedMonth();
 

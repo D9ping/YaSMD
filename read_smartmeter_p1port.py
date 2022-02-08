@@ -100,7 +100,7 @@ if Path(WRITECACHE_TMPFILEPATH).is_file():
 line = ("%s,%0.1f,%0.1f,%0.1f,%s,%s,%s,%s\n" % (now.strftime("%Y-%m-%d %H:%M:%S"), dalverbruik, piekverbruik, dalterug, piekterug, vermogenaf, vermogenterug, gas))
 writecache_newsize = writecachedata_filesize + len(line)
 if writecache_newsize >= TARGET_SECTORSIZE:
-    with open(WRITECACHE_TMPFILEPATH, 'r') as tmpfile, open(WEBINTERFACEROOTFOLDER + DATA_FILEPATH, 'a') as persistentfile:
+    with open(WRITECACHE_TMPFILEPATH, 'r') as tmpfile, open(DATA_FILEPATH, 'a') as persistentfile:
         for linetmpfile in tmpfile:
              persistentfile.write(linetmpfile)
         persistentfile.write(line)
