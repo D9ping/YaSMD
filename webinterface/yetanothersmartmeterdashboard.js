@@ -197,10 +197,10 @@ var btnback = document.getElementById('btnback');
 btnback.addEventListener('click', function() {
     selectedDate.setDate(selectedDate.getDate()-1);
     if (moment(selectedDate).isBefore(firstDataDate)) {
-        document.getElementById('btnback').setAttribute("style", "visibility: hidden");
+        document.getElementById('btnback').className = "hidden";
     }
 
-    document.getElementById('btnnext').setAttribute("style", "");
+    document.getElementById('btnnext').className = "";
     loadPowerGraph('/' + selectedDate.getFullYear() + "/data_" + selectedDate.toISOString().substr(0, 10) + ".csv");
     if (moment(selectedDate).isSameOrAfter(firstGasDate)) {
         loadGasGraph('/' + selectedDate.getFullYear() + "/gasuse_" + selectedDate.toISOString().substr(0, 10) + ".csv");
@@ -211,11 +211,11 @@ btnback.addEventListener('click', function() {
 
 var btnnext = document.getElementById('btnnext');
 btnnext.addEventListener('click', function() {
-    document.getElementById('btnback').setAttribute("style", "");
+    document.getElementById('btnback').className = "";
     selectedDate.setDate(selectedDate.getDate()+1);
     let dy = new Date();
     if (moment(selectedDate).isAfter(dy)) {
-        document.getElementById('btnnext').setAttribute("style", "visibility: hidden");
+        document.getElementById('btnnext').className = "hidden";
         loadPowerGraph("data.csv");
         loadGasGraph("gasuse.csv");
         showSelectedDate(true);
@@ -228,9 +228,9 @@ btnnext.addEventListener('click', function() {
 
 btnbackMonth.addEventListener('click', function() {
     selectedMonth = moment(selectedMonth).subtract(1, 'months').toDate();
-    document.getElementById('btnnextMonth').setAttribute("style", "");
+    document.getElementById('btnnextMonth').className = "";
     if (moment(selectedMonth).isBefore(firstDataMonth)) {
-        document.getElementById('btnbackMonth').setAttribute("style", "visibility: hidden");
+        document.getElementById('btnbackMonth').className = "hidden";
     }
 
     showSelectedMonth();
@@ -239,10 +239,10 @@ btnbackMonth.addEventListener('click', function() {
 
 btnnextMonth.addEventListener('click', function() {
     selectedMonth = moment(selectedMonth).add(1, 'months').toDate();
-    document.getElementById('btnbackMonth').setAttribute("style", "");
+    document.getElementById('btnbackMonth').className = "";
     var d = moment(new Date()).subtract(1, 'months').toDate();
     if (moment(selectedMonth).isAfter(d)) {
-        document.getElementById('btnnextMonth').setAttribute("style", "visibility: hidden");
+        document.getElementById('btnnextMonth').className = "hidden";
     }
 
     showSelectedMonth();
