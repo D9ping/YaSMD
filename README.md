@@ -10,6 +10,7 @@ An other python script to read the smart meter and write
 PySerial is needed for reading the P1 port on the smart meter.
 PyCurl is used for getting the hourly outside temperature data.
 ```shell
+sudo apt install python3-pip libcurl4-gnutls-dev librtmp-dev bc
 pip3 install pycurl pyserial
 ```
 
@@ -19,7 +20,7 @@ pip3 install pycurl pyserial
 */5 * * * * /usr/bin/nice -n 18 /usr/bin/python3 /home/pi/read_smartmeter_p1port.py >>/home/pi/read_smartmeter_p1port.log 2>&1
 
 # Create new daily csv file. etc.
-59 23 * * * /usr/bin/nice -n 10 sh /home/pi/rotate_csv_files.sh >>/home/pi/rotate_csv_files.log 2>&1
+59 23 * * * /usr/bin/nice -n 10 /usr/bin/sh /home/pi/rotate_csv_files.sh >>/home/pi/rotate_csv_files.log 2>&1
 ```
 
 ### Extending MicroSD card lifespan with tmpfs caching.
