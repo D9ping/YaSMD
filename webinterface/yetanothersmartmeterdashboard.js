@@ -12,8 +12,8 @@ function loadPowerGraph(csvfile) {
         {
             visibility: [false, false, false, false, true, true, true],
             includeZero: true,
-            ylabel: 'watt',
-            y2label: 'kubieke meter gas totaal',
+            ylabel: i18next.t('chartWatt'),
+            y2label: i18next.t('chartGasTotal'),
             drawXGrid: false,
             showRoller: false,
             drawPoints: true,
@@ -54,8 +54,8 @@ function loadGasGraph(csvfile) {
         csvfile,
         {
             includeZero: true,
-            ylabel: 'Kubieke meter gas per uur',
-            y2label: 'Graden Celcius',
+            ylabel: i18next.t('chartGasHour'),
+            y2label: i18next.t('chartTemperature') + ' Celcius',
             drawXGrid: false,
             showRoller: false,
             drawPoints: true,
@@ -126,7 +126,7 @@ function loadGasMonthGraph(csvfile) {
         document.getElementById("divGraphGasMonth"),
         csvfile, {
             includeZero: true,
-            ylabel: 'Kubieke meter gas per dag',
+            ylabel: i18next.t('chartGasDay'),
             drawXGrid: false,
             showRoller: false,
             drawPoints: false,
@@ -148,7 +148,7 @@ function loadGasMonthGraph(csvfile) {
                     valueFormatter: function(val) {
                         var gasRate = parseFloat(spanGasRate.textContent.replace(',', '.'));
                         var gasDayCost = val * gasRate;
-                        return val+' (€ '+gasDayCost.toFixed(2).toString().replace('.', ',')+')'; 
+                        return val+' (' + valuta + ' '+gasDayCost.toFixed(2).toString().replace('.', ',')+')'; 
                     }
                 }
             }
@@ -160,7 +160,7 @@ function showSelectedDate(isToday) {
     let spanSelectedDate = document.getElementById('textSelectedDate');
     let iso8601str = selectedDate.toISOString(true).substr(0, 10);
     spanSelectedDate.textContent = iso8601str;
-    document.getElementById('btndownload').setAttribute('title', 'Download gegevens van ' + iso8601str);
+    document.getElementById('btndownload').setAttribute('title', i18next.t('btnDownloadDataFrom') + iso8601str);
     document.getElementById('downloadlink').setAttribute('download', 'data_'+iso8601str+'.csv');
     if (arguments.length === 0) {
         document.getElementById('downloadlink').setAttribute('href', '/' + selectedDate.getFullYear() + '/data_' + iso8601str + '.csv');
@@ -168,7 +168,7 @@ function showSelectedDate(isToday) {
     }
 
     if (isToday) {
-        document.getElementById('downloadlink').setAttribute('download', 'data_'+iso8601str+'_incompleet.csv');
+        document.getElementById('downloadlink').setAttribute('download', 'data_'+iso8601str+'_' + encodeURIComponent(i18next.t('filenameNoFullDay')) + '.csv');
         document.getElementById('downloadlink').setAttribute('href', '/data.csv');
         return;
     }
@@ -197,10 +197,10 @@ var btnback = document.getElementById('btnback');
 btnback.addEventListener('click', function() {
     selectedDate.setDate(selectedDate.getDate()-1);
     if (moment(selectedDate).isBefore(firstDataDate)) {
-        document.getElementById('btnback').setAttribute("style", "visibility: hidden");
+        document.getElementById('btnback').className = "hidden";
     }
 
-    document.getElementById('btnnext').setAttribute("style", "");
+    document.getElementById('btnnext').className = "";
     loadPowerGraph('/' + selectedDate.getFullYear() + "/data_" + selectedDate.toISOString().substr(0, 10) + ".csv");
     if (moment(selectedDate).isSameOrAfter(firstGasDate)) {
         loadGasGraph('/' + selectedDate.getFullYear() + "/gasuse_" + selectedDate.toISOString().substr(0, 10) + ".csv");
@@ -211,11 +211,11 @@ btnback.addEventListener('click', function() {
 
 var btnnext = document.getElementById('btnnext');
 btnnext.addEventListener('click', function() {
-    document.getElementById('btnback').setAttribute("style", "");
+    document.getElementById('btnback').className = "";
     selectedDate.setDate(selectedDate.getDate()+1);
     let dy = new Date();
     if (moment(selectedDate).isAfter(dy)) {
-        document.getElementById('btnnext').setAttribute("style", "visibility: hidden");
+        document.getElementById('btnnext').className = "hidden";
         loadPowerGraph("data.csv");
         loadGasGraph("gasuse.csv");
         showSelectedDate(true);
@@ -228,9 +228,9 @@ btnnext.addEventListener('click', function() {
 
 btnbackMonth.addEventListener('click', function() {
     selectedMonth = moment(selectedMonth).subtract(1, 'months').toDate();
-    document.getElementById('btnnextMonth').setAttribute("style", "");
+    document.getElementById('btnnextMonth').className = "";
     if (moment(selectedMonth).isBefore(firstDataMonth)) {
-        document.getElementById('btnbackMonth').setAttribute("style", "visibility: hidden");
+        document.getElementById('btnbackMonth').className = "hidden";
     }
 
     showSelectedMonth();
@@ -239,10 +239,10 @@ btnbackMonth.addEventListener('click', function() {
 
 btnnextMonth.addEventListener('click', function() {
     selectedMonth = moment(selectedMonth).add(1, 'months').toDate();
-    document.getElementById('btnbackMonth').setAttribute("style", "");
+    document.getElementById('btnbackMonth').className = "";
     var d = moment(new Date()).subtract(1, 'months').toDate();
     if (moment(selectedMonth).isAfter(d)) {
-        document.getElementById('btnnextMonth').setAttribute("style", "visibility: hidden");
+        document.getElementById('btnnextMonth').className = "hidden";
     }
 
     showSelectedMonth();
@@ -261,7 +261,7 @@ if (typeof(Storage) !== "undefined") {
 }
 
 spanGasRate.addEventListener('click', function() {
-    var newGasRate = prompt("Voer een de nieuwe gasprijs in.", spanGasRate.textContent).replace('.', ',');
+    var newGasRate = prompt(i18next.t('promtNewGasPrice'), spanGasRate.textContent).replace('.', ',');
     if (typeof(Storage) !== "undefined" && newGasRate !== "undefined") {
         if (newGasRate !== "") {
             spanGasRate.textContent = newGasRate;
@@ -279,7 +279,7 @@ xmlhttp.onreadystatechange = function() {
         let resp = xmlhttp.responseText.split("\n");
         if (resp.length >= 2) {
             var divCurTemp = document.getElementById('divCurrentTemperature');
-            divCurTemp.append(document.createTextNode('Temperatuur nu'));
+            divCurTemp.append(document.createTextNode(i18next.t('chartTitleTempNow')));
             var lastTemperature = '';
             var totalTemperature = 0;
             var totaldaygasuse = 0;
@@ -307,14 +307,14 @@ xmlhttp.onreadystatechange = function() {
             let roundedAvgTemperatureToday = avgTemperatureTodayParts[0] + ',' + avgTemperatureTodayParts[1][0];
             var avgTempTodayH3 = document.createElement('h3');
             avgTempTodayH3.className = 'avgTempTodayH3';
-            avgTempTodayH3.textContent = 'Gem. temperatuur vandaag tot nu: ±' + roundedAvgTemperatureToday + ' ℃';
+            avgTempTodayH3.textContent = i18next.t('chartTitleAvgTemp') + roundedAvgTemperatureToday + ' ℃';
             divCurTemp.append(avgTempTodayH3);
 
             let totaldaygasusestrparts = String(totaldaygasuse).split(".");
             let roundeddaygasuse = totaldaygasusestrparts[0] + ',' + totaldaygasusestrparts[1][0];
             var curGasuseTodayH3 = document.createElement('h3');
             curGasuseTodayH3.className = 'gasuseTodayH3';
-            curGasuseTodayH3.textContent = 'Gas verbruik vandaag tot nu: ±' + roundeddaygasuse + ' kuub.';
+            curGasuseTodayH3.textContent = i18next.t('chartTitleGasTodayTillNow') + roundeddaygasuse + ' kuub.';
             divCurTemp.append(curGasuseTodayH3);
         }
     }
@@ -323,7 +323,7 @@ xmlhttp.onreadystatechange = function() {
 xmlhttp.send();
 
 window.addEventListener('offline', function(e) {
-    let nodeIssueText = document.createTextNode('Je lijkt offline te zijn.');
+    let nodeIssueText = document.createTextNode(i18next.t('statusOflline'));
     document.getElementById('issues').appendChild(nodeIssueText);
     document.getElementById('btndownload').setAttribute('disabled', 'disabled');
 }, false);

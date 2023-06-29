@@ -23,6 +23,9 @@ pip3 install pycurl pyserial
 59 23 * * * /usr/bin/nice -n 10 /usr/bin/sh /home/pi/rotate_csv_files.sh >>/home/pi/rotate_csv_files.log 2>&1
 ```
 
+### Webinterface screenshots
+![webinterface](https://raw.githubusercontent.com/D9ping/YaSMD/screenshots/webinterface_dashboard.png)
+
 ### Extending MicroSD card lifespan with tmpfs caching.
 If you use this on a rasberry Pi with a MicroSD card, 
 the MicroSD lifespan can be short because of a lot of short writes for each line 
@@ -47,6 +50,6 @@ If no issues are found reboot the pi or run sudo mount -a to actualy start using
 
 ### Licenses
 The sourcecode of the YaSMD (Yet another Smart Meter Dashboard) is licensed under the terms of the MIT license.
-The used liberaries moment.js and dygraph.js are also licensed under the terms of the MIT license.
+The used liberaries moment.js, i18next and dygraph.js are also licensed under the terms of the MIT license.
 PycURL is dual licensed under the LGPL and an MIT/X derivative license based on the cURL license.
 pySerial is licensed under a BSD-3-clause license.
